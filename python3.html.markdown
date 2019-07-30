@@ -7,6 +7,7 @@ contributors:
     - ["Zachary Ferguson", "http://github.com/zfergus2"]
     - ["evuez", "http://github.com/evuez"]
     - ["Rommel Martinez", "https://ebzzry.io"]
+    - ["Roberto Fernandez Diaz", "https://github.com/robertofd1995"]
 filename: learnpython3.py
 ---
 
@@ -40,10 +41,10 @@ Note: This article applies to Python 3 specifically. Check out [here](http://lea
 10 * 2  # => 20
 35 / 5  # => 7.0
 
-# Result of integer division truncated down both for positive and negative.
+# Integer division rounds down for both positive and negative numbers.
 5 // 3       # => 1
-5.0 // 3.0   # => 1.0 # works on floats too
 -5 // 3      # => -2
+5.0 // 3.0   # => 1.0 # works on floats too
 -5.0 // 3.0  # => -2.0
 
 # The result of division is always a float
@@ -71,15 +72,24 @@ not False  # => True
 True and False  # => False
 False or True   # => True
 
-# Note using Bool operators with ints
-# False is 0 and True is 1
+# True and False are actually 1 and 0 but with different keywords
+True + True # => 2
+True * 8    # => 8
+False - 5   # => -5
+
+# Comparison operators look at the numerical value of True and False
+0 == False  # => True
+1 == True   # => True
+2 == True   # => False
+-5 != False # => True
+
+# Using boolean logical operators on ints casts them to booleans for evaluation, but their non-cast value is returned
 # Don't mix up with bool(ints) and bitwise and/or (&,|)
+bool(0)     # => False
+bool(4)     # => True
+bool(-6)    # => True
 0 and 2     # => 0
 -5 or 0     # => -5
-0 == False  # => True
-2 == True   # => False
-1 == True   # => True
--5 != False != True #=> True
 
 # Equality is ==
 1 == 1  # => True
@@ -95,7 +105,10 @@ False or True   # => True
 2 <= 2  # => True
 2 >= 2  # => True
 
-# Comparisons can be chained!
+# Seeing whether a value is in a range
+1 < 2 and 2 < 3  # => True
+2 < 3 and 3 < 2  # => False
+# Chaining makes this look nicer
 1 < 2 < 3  # => True
 2 < 3 < 2  # => False
 
@@ -137,6 +150,12 @@ len("This is a string")  # => 16
 # If your Python 3 code also needs to run on Python 2.5 and below, you can also
 # still use the old style of formatting:
 "%s can be %s the %s way" % ("Strings", "interpolated", "old")  # => "Strings can be interpolated the old way"
+
+# You can also format using f-strings or formatted string literals (in Python 3.6+)
+name = "Reiko"
+f"She said her name is {name}." # => "She said her name is Reiko"
+# You can basically put any Python statement inside the braces and it will be output in the string.
+f"{name} is {len(name)} characters long." # => "Reiko is 5 characters long."
 
 
 # None is an object
@@ -274,7 +293,8 @@ a, b, c = (1, 2, 3)  # a is now 1, b is now 2 and c is now 3
 # You can also do extended unpacking
 a, *b, c = (1, 2, 3, 4)  # a is now 1, b is now [2, 3] and c is now 4
 # Tuples are created by default if you leave out the parentheses
-d, e, f = 4, 5, 6
+d, e, f = 4, 5, 6  # tuple 4, 5, 6 is unpacked into variables d, e and f
+# respectively such that d = 4, e = 5 and f = 6
 # Now look how easy it is to swap two values
 e, d = d, e  # d is now 5 and e is now 4
 
@@ -294,16 +314,19 @@ valid_dict = {(1,2,3):[1,2,3]}   # Values can be of any type, however.
 filled_dict["one"]  # => 1
 
 # Get all keys as an iterable with "keys()". We need to wrap the call in list()
-# to turn it into a list. We'll talk about those later.  Note - Dictionary key
-# ordering is not guaranteed. Your results might not match this exactly.
-list(filled_dict.keys())  # => ["three", "two", "one"]
+# to turn it into a list. We'll talk about those later.  Note - for Python
+# versions <3.7, dictionary key ordering is not guaranteed. Your results might
+# not match the example below exactly. However, as of Python 3.7, dictionary
+# items maintain the order at which they are inserted into the dictionary.
+list(filled_dict.keys())  # => ["three", "two", "one"] in Python <3.7
+list(filled_dict.keys())  # => ["one", "two", "three"] in Python 3.7+
 
 
 # Get all values as an iterable with "values()". Once again we need to wrap it
 # in list() to get it out of the iterable. Note - Same as above regarding key
 # ordering.
-list(filled_dict.values())  # => [3, 2, 1]
-
+list(filled_dict.values())  # => [3, 2, 1]  in Python <3.7
+list(filled_dict.values())  # => [1, 2, 3] in Python 3.7+
 
 # Check for existence of keys in a dictionary with "in"
 "one" in filled_dict  # => True
@@ -348,6 +371,8 @@ valid_set = {(1,), 1}
 # Add one more item to the set
 filled_set = some_set
 filled_set.add(5)  # filled_set is now {1, 2, 3, 4, 5}
+# Sets do not have duplicate elements
+filled_set.add(5)  # it remains as before {1, 2, 3, 4, 5}
 
 # Do set intersection with &
 other_set = {3, 4, 5, 6}
@@ -783,6 +808,7 @@ class Superhero(Human):
         # add additional class attributes:
         self.fictional = True
         self.movie = movie
+        # be aware of mutable default values, since defaults are shared
         self.superpowers = superpowers
 
         # The "super" function lets you access the parent class's methods
